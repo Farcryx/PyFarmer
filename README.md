@@ -1,6 +1,8 @@
 # PyFarmer Game
 
 **PyFarmer Game** to cyfrowa adaptacja klasycznej gry planszowej "Superfarmer", stworzonej przez Karola Borsuka w 1943 roku. Gra została zaprojektowana z wykorzystaniem **Python** oraz **PyGame** i pozwala na interaktywną rozgrywkę dla 2–4 graczy.
+Zbiór wszystkich zasad i [instrukcję](https://files.rebel.pl/files/instrukcje/SUPERFARMER_DELUX.pdf)
+można znaleźć na oficjalnej stronie wydawcy gry.
 
 ## Funkcje projektu
 - Cyfrowa wersja gry planszowej z uwzględnieniem wszystkich zasad.
@@ -14,13 +16,6 @@
 - **PyGame:** `2.6.1+`
 - **Markdown** (dokumentacja)
 - **Git** (system kontroli wersji)
-
-## Zwierzęta w grze
-- **Królik**
-- **Owca**
-- **Świnia**
-- **Krowa**
-- **Koń**
 
 ## Plan rozwoju
 - [x] Stworzenie podstawowej struktury projektu.

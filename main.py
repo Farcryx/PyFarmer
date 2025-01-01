@@ -5,7 +5,7 @@ class App:
     def __init__(self):
         self._running = True
         self._display_surf = None
-        self.size = self.weight, self.height = 1000, 1000/16*9
+        self.size = self.weight, self.height = 1200, 1200/16*9
 
     def on_init(self):
         pygame.init()
@@ -20,7 +20,35 @@ class App:
         pass
 
     def on_render(self):
-        pass
+        self._display_surf.fill((0, 0, 0))  # Wyczyść ekran na czarno
+    
+        # Wysokość paska nawigacyjnego
+        nav_bar_height = 50
+    
+        # Narysuj pasek nawigacyjny
+        pygame.draw.rect(self._display_surf, (50, 50, 50), (0, 0, self.size[0], nav_bar_height))
+    
+        # Rozmiar każdej planszy
+        board_width = self.size[0] // 2
+        board_height = (self.size[1] - nav_bar_height) // 2
+    
+        # Pozycje plansz
+        positions = [
+            (0, nav_bar_height),  # Lewy górny róg
+            (board_width, nav_bar_height),  # Prawy górny róg
+            (0, nav_bar_height + board_height),  # Lewy dolny róg
+            (board_width, nav_bar_height + board_height)  # Prawy dolny róg
+        ]
+    
+        # Załaduj obraz planszy
+        board_image = pygame.image.load('src/images/plansza_16_9.jpg')
+        board_image = pygame.transform.scale(board_image, (board_width, board_height))
+    
+        # Narysuj każdą planszę
+        for pos in positions:
+            self._display_surf.blit(board_image, pos)
+    
+        pygame.display.flip()  # Odśwież ekran
 
     def on_cleanup(self):
         pygame.quit()

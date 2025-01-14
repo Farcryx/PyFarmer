@@ -1,4 +1,4 @@
-from classes import Player
+from src.classes.Player import Player
 
 
 class TradeManager:

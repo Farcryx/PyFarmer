@@ -1,60 +1,69 @@
+from src.classes.Player import Player
+
+
 class DiceEventHandler:
-    def __init__(self, main_herd: dict[str, int], player_animals: dict[str, int], player_dogs: dict[str, int]):
+    def __init__(self, main_herd: dict[str, int]):
         self.main_herd = main_herd
-        self.player_animals = player_animals
-        self.player_dogs = player_dogs
         self.last_roll = ("", "")
+        self.player = None
     
-    def handle_roll(self, dice1_result: str, dice2_result: str) -> tuple[bool, str]:
-        """Obsługuje wynik rzutu kostkami i zwraca (sukces, wiadomość)"""
+    def handle_roll(self, dice1_result: str, dice2_result: str, player: Player) -> tuple[bool, str]:
+        """
+        Handle dice roll event
+        :param dice1_result: Result of the first dice roll
+        :param dice2_result: Result of the second dice roll
+        :param player: Player object
+        :return: Tuple with two elements: boolean if the game should continue and message for the player
+        """
+        self.player = player
         self.last_roll = (dice1_result, dice2_result)
         
-        # Sprawdź zdarzenia specjalne
-        if "wilk" in (dice1_result, dice2_result):
+        # Check for wolf or fox
+        if "wolf" in (dice1_result, dice2_result):
             return self._handle_wolf()
-        if "lis" in (dice1_result, dice2_result):
+        if "fox" in (dice1_result, dice2_result):
             return self._handle_fox()
             
-        # Zlicz zwierzęta z rzutu
+        # Count animals from the roll and update player's herd
         animals_to_add = self._count_animals_from_roll()
         return self._update_player_herd(animals_to_add)
     
     def _handle_wolf(self) -> tuple[bool, str]:
-        """Obsługuje atak wilka"""
-        if self.player_dogs.get("big_dog", 0) > 0:
-            return True, "Duży pies obronił stado przed wilkiem!"
+        """Wolf event handler"""
+        if self.player.big_dogs > 0:
+            return True, "Wolf was scared away by big dog!"
         
-        # Utrata wszystkich zwierząt oprócz koni
-        lost_animals = {k: v for k, v in self.player_animals.items() if k != "koń"}
-        self.player_animals.update({k: 0 for k in lost_animals.keys()})
-        return False, "Wilk pożarł wszystkie zwierzęta oprócz koni!"
+        # Player lost all animals except horses
+        lost_animals = {k: v for k, v in self.player.animals.items() if k != "horse"}
+        self.player.animals.update({k: 0 for k in lost_animals.keys()})
+        return False, "Wolf ate all animals except horses!"
     
     def _handle_fox(self) -> tuple[bool, str]:
-        """Obsługuje atak lisa"""
-        if self.player_dogs.get("small_dog", 0) > 0:
-            return True, "Mały pies obronił króliki przed lisem!"
+        """Fox event handler"""
+        if self.player.small_dogs > 0:
+            return True, "Fox was scared away by small dog!"
         
-        # Utrata wszystkich królików
-        lost_rabbits = self.player_animals.get("królik", 0)
-        self.player_animals["królik"] = 0
-        return False, f"Lis pożarł wszystkie króliki! ({lost_rabbits})"
+        # Player lost all rabbits
+        lost_rabbits = self.player.animals.get("rabbit", 0)
+        self.player.animals["rabbit"] = 0
+        return False, f"Fox ate all the rabbits! ({lost_rabbits})"
     
     def _count_animals_from_roll(self) -> dict[str, int]:
-        """Zlicza zwierzęta z rzutu kostkami"""
+        """Count animals from the last roll"""
         animals = {}
         for result in self.last_roll:
-            if result not in ("wilk", "lis"):
+            if result not in ("wolf", "fox"):
                 animals[result] = animals.get(result, 0) + 1
         return animals
     
     def _update_player_herd(self, new_animals: dict[str, int]) -> tuple[bool, str]:
-        """Aktualizuje stado gracza o nowe zwierzęta"""
+        """Update player's herd with new animals"""
         message = []
         for animal, count in new_animals.items():
             available = self.main_herd.get(animal, 0)
             if available >= count:
-                self.player_animals[animal] = self.player_animals.get(animal, 0) + count
+                self.player.animals[animal] = self.player.animals.get(animal, 0) + count
                 self.main_herd[animal] -= count
                 message.append(f"+{count} {animal}")
                 
-        return True, ", ".join(message) if message else "Brak nowych zwierząt"
+        return True, ", ".join(message) if message else "No animals to take!"

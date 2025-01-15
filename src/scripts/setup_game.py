@@ -7,35 +7,35 @@ from src.classes.DiceEventHandler import DiceEventHandler
 
 # Game constants
 INITIAL_HERD = {
-    "królik": 60,
-    "owca": 24,
-    "świnia": 20,
-    "krowa": 12,
-    "koń": 6
+    "rabbit": 60,
+    "sheep": 24,
+    "pig": 20,
+    "cow": 12,
+    "horse": 6
 }
 
 EXCHANGE_RATES = {
-    "królik": {"owca": 6, "świnia": 12, "krowa": 36, "koń": 72},
-    "owca": {"królik": 1 / 6, "świnia": 2, "krowa": 6, "koń": 12},
-    "świnia": {"królik": 1 / 12, "owca": 1 / 2, "krowa": 3, "koń": 6},
-    "krowa": {"królik": 1 / 36, "owca": 1 / 6, "świnia": 1 / 3, "koń": 2},
-    "koń": {"królik": 1 / 72, "owca": 1 / 12, "świnia": 1 / 6, "krowa": 1 / 2}
+    "rabbit": {"sheep": 6, "pig": 12, "cow": 36, "horse": 72},
+    "sheep": {"rabbit": 1 / 6, "pig": 2, "cow": 6, "horse": 12},
+    "pig": {"rabbit": 1 / 12, "sheep": 1 / 2, "cow": 3, "horse": 6},
+    "cow": {"rabbit": 1 / 36, "sheep": 1 / 6, "pig": 1 / 3, "horse": 2},
+    "horse": {"rabbit": 1 / 72, "sheep": 1 / 12, "pig": 1 / 6, "cow": 1 / 2}
 }
 
-DICE1_SIDES = ["królik", "królik", "królik", "królik", "królik", "królik", "królik", "królik", "owca", "świnia",
-               "krowa", "lis"]
-DICE2_SIDES = ["królik", "królik", "królik", "królik", "królik", "królik", "królik", "królik", "owca", "świnia", "koń",
-               "wilk"]
+DICE1_SIDES = ["rabbit", "rabbit", "rabbit", "rabbit", "rabbit", "rabbit", "rabbit", "rabbit", "sheep", "pig",
+               "cow", "fox"]
+DICE2_SIDES = ["rabbit", "rabbit", "rabbit", "rabbit", "rabbit", "rabbit", "rabbit", "rabbit", "sheep", "pig",
+               "horse", "wolf"]
 
 
 def create_animals():
     """Create all animal objects with initial values"""
     return {
-        "królik": Animal("królik", 1, INITIAL_HERD["królik"], "prey"),
-        "owca": Animal("owca", 6, INITIAL_HERD["owca"], "farm"),
-        "świnia": Animal("świnia", 12, INITIAL_HERD["świnia"], "farm"),
-        "krowa": Animal("krowa", 36, INITIAL_HERD["krowa"], "farm"),
-        "koń": Animal("koń", 72, INITIAL_HERD["koń"], "farm")
+        "rabbit": Animal("rabbit", 1, INITIAL_HERD["rabbit"], "prey"),
+        "sheep": Animal("sheep", 6, INITIAL_HERD["sheep"], "farm"),
+        "pig": Animal("pig", 12, INITIAL_HERD["pig"], "farm"),
+        "cow": Animal("cow", 36, INITIAL_HERD["cow"], "farm"),
+        "horse": Animal("horse", 72, INITIAL_HERD["horse"], "farm")
     }
 
 

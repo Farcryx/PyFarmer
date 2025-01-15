@@ -1,11 +1,11 @@
 class Player:
     def __init__(self, name: str):
         self.name = name
-        self.animals = {"królik": 0, "owca": 0, "świnia": 0, "krowa": 0, "koń": 0}
+        self.animals = {"rabbit": 0, "sheep": 0, "pig": 0, "cow": 0, "horse": 0}
         self.small_dogs = 0
         self.big_dogs = 0
         self.current_dice_roll = ("", "")
-        self.total_pairs = {"królik": 0, "owca": 0, "świnia": 0, "krowa": 0, "koń": 0}
+        self.total_pairs = {"rabbit": 0, "sheep": 0, "pig": 0, "cow": 0, "horse": 0}
         self.has_won = False
 
     def add_animal(self, animal_type: str, quantity: int = 1) -> bool:
@@ -33,7 +33,7 @@ class Player:
 
     def _check_win_condition(self):
         """Check if player has won"""
-        required_animals = {"królik": 1, "owca": 1, "świnia": 1, "krowa": 1, "koń": 1}
+        required_animals = {"rabbit": 1, "sheep": 1, "pig": 1, "cow": 1, "horse": 1}
         self.has_won = all(self.animals[animal] >= quantity 
                           for animal, quantity in required_animals.items())
 
@@ -49,5 +49,9 @@ class Player:
     def __str__(self) -> str:
         """String representation of player's state"""
         animals_str = ", ".join(f"{k}: {v}" for k, v in self.animals.items())
-        dogs_str = f"Małe psy: {self.small_dogs}, Duże psy: {self.big_dogs}"
-        return f"Gracz {self.name} | {animals_str} | {dogs_str}"
+        dogs_str = f"Small dogs: {self.small_dogs}, Big dogs: {self.big_dogs}"
+        return f"Player: {self.name} | {animals_str} | {dogs_str}"
+
+    def get_last_roll(self) -> str:
+        """Return the last roll of the player"""
+        return f"{self.name} rolled {self.current_dice_roll[0]} and {self.current_dice_roll[1]}"

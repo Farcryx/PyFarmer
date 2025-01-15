@@ -40,12 +40,17 @@ class App:
         self._display_surf = py.display.set_mode(self.size, py.HWSURFACE | py.DOUBLEBUF)
         self._running = True
         try:
-            self.font_title = py.font.SysFont('Poppins', 24, bold=True)  # Dodaj czcionkę
-            self.font_button = py.font.SysFont('Poppins', 20, bold=True)  # Czcionka dla przycisków
-        except py.error:
-            print("Font loading error")
-            self.font_title = py.font.Font("Fonts/Tahoma.ttf", 24)
-            self.font_button = py.font.Font("Fonts/Tahoma.ttf", 20)
+            self.font_title = py.font.Font("src/fonts/Poppins-Bold.ttf", 24)
+            self.font_button = py.font.Font("src/fonts/Poppins-Medium.ttf", 20)
+        except IOError:
+            print("Font loading error, trying with default font...")
+            self.font_title = py.font.Font(None, 24)
+            self.font_button = py.font.Font(None, 20)
+        except Exception as e:
+            print(f"Error: {e}")
+            print("Quitting...")
+            self._running = False
+            return False
 
     def on_event(self, event):
         # Window events

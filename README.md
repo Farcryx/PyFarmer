@@ -19,9 +19,11 @@ można znaleźć na oficjalnej stronie wydawcy gry.
 
 ## Plan rozwoju
 - [x] Stworzenie podstawowej struktury projektu.
-- [ ] Implementacja podstawowej mechaniki gry.
+- [x] Stworzenie systemu rzutu kostkami.
+- [x] Implementacja podstawowej mechaniki gry.
+- [ ] Sprawdzenie zgodności z zasadami oryginalnej gry.
 - [ ] Stworzenie interfejsu graficznego.
-- [ ] Dodanie obsługi wielu graczy.
+- [x] Dodanie obsługi wielu graczy.
 - [ ] Implementacja mechaniki wymiany zwierząt.
 - [ ] Dodanie możliwości rozgrywki z botami.
 - [ ] Dodanie systemu osiągnięć i rankingów.

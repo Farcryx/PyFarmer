@@ -1,5 +1,7 @@
+from src.classes.MainHerd import MainHerd
+
 class Player:
-    def __init__(self, name: str):
+    def __init__(self, name: str, main_herd: MainHerd) -> None:
         self.name = name
         self.animals = {"rabbit": 0, "sheep": 0, "pig": 0, "cow": 0, "horse": 0}
         self.small_dogs = 0
@@ -7,12 +9,15 @@ class Player:
         self.current_dice_roll = ("", "")
         self.total_pairs = {"rabbit": 0, "sheep": 0, "pig": 0, "cow": 0, "horse": 0}
         self.has_won = False
+        self.main_herd = main_herd
 
     def add_animal(self, animal_type: str, quantity: int = 1) -> bool:
         """Add animals to player's herd"""
         if animal_type in self.animals:
             self.animals[animal_type] += quantity
-            self._check_pairs()
+            # remove animals from main herd
+            self.main_herd.remove_animal(animal_type, quantity)
+            self.check_pairs()
             self._check_win_condition()
             return True
         return False
@@ -21,11 +26,13 @@ class Player:
         """Remove animals from player's herd"""
         if animal_type in self.animals and self.animals[animal_type] >= quantity:
             self.animals[animal_type] -= quantity
-            self._check_pairs()
+            # add animals to main herd
+            self.main_herd.add_animal(animal_type, quantity)
+            self.check_pairs()
             return True
         return False
 
-    def _check_pairs(self):
+    def check_pairs(self):
         """Check and update animal pairs"""
         for animal in self.animals:
             pairs = self.animals[animal] // 2

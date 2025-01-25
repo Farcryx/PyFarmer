@@ -2,6 +2,7 @@ import pygame as py
 from typing import List, Tuple
 
 from src.classes import Player
+from src.classes.MainHerd import MainHerd
 from src.enums.Animal import Animal
 
 
@@ -10,7 +11,7 @@ class Board:
     Class that represents the board of the game.
     """
 
-    def __init__(self, font: py.font.Font, no_players: int) -> None:
+    def __init__(self, font: py.font.Font, no_players: int, main_herd: MainHerd) -> None:
         """
         Initialize the board.
         :param font: Font used for rendering text.
@@ -26,6 +27,7 @@ class Board:
         self.active_player = 0
         self.players = []
         self.render_player = 0
+        self.main_herd = main_herd
         self.animals_coords = [
             {
                 Animal.RABBIT: [],
@@ -69,48 +71,6 @@ class Board:
             ]
         }
         return positions.get(self.no_players, [(0, nav_bar_height)])
-
-    # def load_and_scale_board_image(self, size: tuple[int, float], nav_bar_height: int) -> py.Surface:
-    #     """
-    #     Load and scale the board image based on the number of players.
-    #     :param size: Size of the window.
-    #     :param nav_bar_height: Height of the navigation bar.
-    #     :return: Scaled board image.
-    #     """
-    #     board_image = py.image.load('src/images/wood_texture.jpg')
-    #
-    #     if self.no_players == 1:
-    #         return py.transform.smoothscale(board_image, (size[0], size[1] - nav_bar_height))
-    #
-    #     # Load and scale the images of the animals and place them on the board
-    #     for i in range(5):
-    #         # sprawdzenie, czy użytkownik posiada zwierzaka
-    #         if self.players[self.render_player].get_number_of_animal(Animal(i).name.lower()) > 0:
-    #             image = py.image.load(f'src/images/animals-active/{Animal(i).name.lower()}.png')
-    #         else:
-    #             image = py.image.load(f'src/images/animals/{Animal(i).name.lower()}.png')
-    #         image = py.transform.smoothscale(image, (80 * 2, 80 * 2))  # Adjust the size as needed
-    #         height = self.board_height - 250 + 200 * i
-    #         for j in range(5 - i):
-    #             width = self.board_width - 240 + 200 * j + 100 * i
-    #             self.animals_coords[1][Animal(i)].append((width, height))
-    #             board_image.blit(image, (width - 40 * 2, height - 40 * 2))  # Adjust position to center the image
-    #
-    #     self.render_player += 1 % (self.no_players - 2)
-    #     # Render two dogs on the board
-    #     small_dog = py.image.load('src/images/animals/small_dog.png')
-    #     big_dog = py.image.load('src/images/animals/big_dog.png')
-    #     small_dog = py.transform.smoothscale(small_dog, (80 * 2, 80 * 2))
-    #     big_dog = py.transform.smoothscale(big_dog, (80 * 2, 80 * 2))
-    #     for i in range(2):
-    #         width = self.board_width - 240 + 200 * i
-    #         self.animals_coords[1][Animal(5 + i)].append((width, height))
-    #         if i == 0:
-    #             board_image.blit(small_dog, (width - 40 * 10, self.board_height - 250 + 200 * 4 - 80))
-    #         else:
-    #             board_image.blit(big_dog, (width - 40 * 10, self.board_height - 250 + 200 * 4 - 80))
-    #
-    #     return py.transform.smoothscale(board_image, (self.board_width, self.board_height))
 
     def load_and_scale_board_image(self, size: tuple[int, float], nav_bar_height: int) -> List[py.Surface]:
         """

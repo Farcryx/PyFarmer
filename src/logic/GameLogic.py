@@ -1,11 +1,9 @@
-import pygame as py
-
 from src.classes.Dice import Dice
 from src.classes.DiceEventHandler import DiceEventHandler
 from src.classes.Player import Player
 from src.GUI.Navbar import Navbar
 from src.classes.Board import Board
-from src.scripts.setup_game import INITIAL_HERD, DICE1_SIDES, DICE2_SIDES
+from src.scripts.setup_game import DICE1_SIDES, DICE2_SIDES
 
 
 class GameLogic():
@@ -13,7 +11,6 @@ class GameLogic():
         """
         Initialize the game logic.
         :param players: List of players in the game.
-        :param no_players: Number of players in the game.
         :param navbar: Navigation bar of the game.
         :param board: Board of the game.
         """
@@ -26,7 +23,7 @@ class GameLogic():
         self.dice2_result = None
         self.navbar = navbar
         self.board = board
-        self.dice_handler = DiceEventHandler(INITIAL_HERD)
+        self.dice_handler = DiceEventHandler(board.main_herd)
 
     def next_player(self) -> None:
         """

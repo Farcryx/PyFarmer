@@ -7,6 +7,7 @@ from src.classes.Board import Board
 from src.classes.Dice import Dice
 from src.classes.Player import Player
 from src.logic.GameLogic import GameLogic
+from src.classes.MainHerd import MainHerd
 
 
 class App:
@@ -34,6 +35,7 @@ class App:
         self.board = None
         self.player_turn = 0
         self.players = []
+        self.main_herd = MainHerd()
 
     def on_init(self):
         py.init()
@@ -73,9 +75,11 @@ class App:
                     self.board_shown = True
 
                     self.navbar = Navbar(self._display_surf, 100, self.font_button, self.font_title, self.size)
-                    self.board = Board(self.font_button, self.no_players)
+                    self.board = Board(self.font_button, self.no_players, self.main_herd)
                     for number in range(self.no_players):
-                        player = Player(f"Player {number + 1}")
+                        player = Player(f"Player {number + 1}", self.main_herd)
+                        # add one rabbit from main herd to each player
+                        player.add_animal("rabbit", 1)
                         print(player.__str__())
                         self.players.append(player)
                     self.game_logic = GameLogic(self.players, self.navbar, self.board)
@@ -91,12 +95,6 @@ class App:
                 # TODO: Buttons for dice and exchange
                 elif is_mouse_over(self.navbar.dice_button):
                     self.game_logic.roll_dice()
-                    # # Roll the dices and update navbar
-                    # self.dice1_result = self.dice1.roll()
-                    # self.dice2_result = self.dice2.roll()
-                    # self.navbar.set_dice_images(self.dice1_result, self.dice2_result)
-                    # self.navbar.render_navbar()
-                    # print(f"Dice 1: {self.navbar.dice1_image_name}, Dice 2: {self.navbar.dice2_image_name}")
                     pass
                 elif is_mouse_over(self.navbar.exchange_button):
                     pass

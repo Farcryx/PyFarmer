@@ -93,9 +93,25 @@ class Board:
                 image_active = py.transform.smoothscale(image_active, (80 * 2, 80 * 2))
                 image_inactive = py.transform.smoothscale(image_inactive, (80 * 2, 80 * 2))
                 height = self.board_height - 250 + 200 * i
+
+                # ISSUE: The text is repeatedly superimposed on itself.
+                #  This leads to a frequently visible layer that is underneath the actual text.
+                # Text rendering
+                font_size = 64  # Adjust the font size as needed
+                self.font = py.font.Font(None, font_size)
+                text = self.font.render(str(animal_count), True, (0, 0, 0))
+                text_rect = text.get_rect()
+                padding = 10  # Adjust the padding as needed
+                text_rect.topleft = (self.board_width - 380 + 100 * i, height)
+                # Clear the previous text by drawing a rectangle with the background color and padding
+                background_rect = py.Rect(text_rect.left - padding, text_rect.top - padding, text_rect.width + 2 * padding, text_rect.height + 2 * padding)
+                board_image.fill((255, 255, 255), background_rect)
+                board_image.blit(text, text_rect.topleft)
+
                 for j in range(5 - i):
                     width = self.board_width - 240 + 200 * j + 100 * i
                     self.animals_coords[1][Animal(i)].append((width, height))
+                    # render the animals on the board
                     if animal_count > 0:
                         board_image.blit(image_active, (width - 40 * 2, height - 40 * 2))
                         animal_count -= 1

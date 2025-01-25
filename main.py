@@ -39,7 +39,7 @@ class App:
 
     def on_init(self):
         py.init()
-        self._display_surf = py.display.set_mode(self.size, py.HWSURFACE | py.DOUBLEBUF)
+        self._display_surf = py.display.set_mode(self.size)
         self._running = True
         try:
             self.font_title = py.font.Font("src/fonts/Poppins-Bold.ttf", 24)

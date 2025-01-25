@@ -35,23 +35,23 @@ class DiceEventHandler:
         if self.player.big_dogs > 0:
             return True, "Wolf was scared away by big dog!"
 
-        # Player lost all animals except horses
-        lost_animals = {k: v for k, v in self.player.animals.items() if k != "horse"}
+        # Player lost all animals except horses, rabbits and small dogs
+        lost_animals = {k: v for k, v in self.player.animals.items() if k not in ("horse", "rabbit")}
         for animal, count in lost_animals.items():
-            self.main_herd.herd[animal] += count
-        self.player.animals.update({k: 0 for k in lost_animals.keys()})
-        return False, "Wolf ate all animals except horses!"
+            self.main_herd.add_animal(animal, count)
+            self.player.animals[animal] = 0
+        return False, f"Wolf ate all animals except horses, rabbits and small dogs!"
 
     def _handle_fox(self) -> tuple[bool, str]:
         """Fox event handler"""
         if self.player.small_dogs > 0:
             return True, "Fox was scared away by small dog!"
 
-        # Player lost all rabbits
-        lost_rabbits = self.player.animals.get("rabbit", 0)
+        # Player lost all rabbits except one
+        lost_rabbits = self.player.animals.get("rabbit", 0) - 1
         self.main_herd.herd["rabbit"] += lost_rabbits
-        self.player.animals["rabbit"] = 0
-        return False, f"Fox ate all the rabbits! ({lost_rabbits})"
+        self.player.animals["rabbit"] = 1
+        return False, f"Fox ate {lost_rabbits} rabbits!"
 
     def _handle_double_roll(self, result: str) -> tuple[bool, str]:
         """Handle double roll event"""

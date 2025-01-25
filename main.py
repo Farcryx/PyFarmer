@@ -79,6 +79,7 @@ class App:
                         print(player.__str__())
                         self.players.append(player)
                     self.game_logic = GameLogic(self.players, self.navbar, self.board)
+                    self.board.set_players(self.players)
 
                     # TODO: Init board and first player turn
 

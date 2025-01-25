@@ -56,8 +56,6 @@ class GameLogic():
         for i in range(self.no_players):
             if i == self.player_turn:
                 self.board.add_stroke(i)
-            else:
-                self.board.remove_stroke(i)
 
     def exchange_dice(self):
         pass

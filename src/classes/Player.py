@@ -55,3 +55,7 @@ class Player:
     def get_last_roll(self) -> str:
         """Return the last roll of the player"""
         return f"{self.name} rolled {self.current_dice_roll[0]} and {self.current_dice_roll[1]}"
+
+    def get_number_of_animal(self, animal: str) -> int:
+        """Return the number of a specific animal"""
+        return self.animals[animal]

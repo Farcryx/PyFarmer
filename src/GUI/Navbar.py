@@ -55,11 +55,11 @@ class Navbar:
         Method rendering the dice images on the navigation bar.
         """
         if self.dice1_image_name and self.dice2_image_name:
-            image1 = py.image.load(f'src/images/zwierzaki/{self.dice1_image_name.lower()}.png')
+            image1 = py.image.load(f'src/images/animals/{self.dice1_image_name.lower()}.png')
             image1 = py.transform.smoothscale(image1, (60, 60))  # Adjust the size as needed
             self.window.blit(image1, (x1, 20))
 
-            image2 = py.image.load(f'src/images/zwierzaki/{self.dice2_image_name.lower()}.png')
+            image2 = py.image.load(f'src/images/animals/{self.dice2_image_name.lower()}.png')
             image2 = py.transform.smoothscale(image2, (60, 60))  # Adjust the size as needed
             self.window.blit(image2, (x2, 20))
 

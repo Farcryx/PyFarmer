@@ -1,5 +1,7 @@
 import pygame as py
 from typing import List, Tuple
+
+from src.classes import Player
 from src.enums.Animal import Animal
 
 
@@ -17,6 +19,25 @@ class Board:
         self.font = font
         self.no_players = no_players
         self.animals_coords = None
+        self.positions = None
+        self.board_width = None
+        self.board_height = None
+        self.window = None
+        self.active_player = 0
+        self.players = []
+        self.render_player = 0
+        self.animals_coords = [
+            {
+                Animal.RABBIT: [],
+                Animal.SHEEP: [],
+                Animal.PIG: [],
+                Animal.COW: [],
+                Animal.HORSE: [],
+                Animal.SMALL_DOG: [],
+                Animal.BIG_DOG: [],
+            }
+            for _ in range(self.no_players)
+        ]
 
     def get_board_positions(self, nav_bar_height: int, board_width: int, board_height: float) -> List[
         Tuple[int, float]]:
@@ -49,7 +70,49 @@ class Board:
         }
         return positions.get(self.no_players, [(0, nav_bar_height)])
 
-    def load_and_scale_board_image(self, size: tuple[int, float], nav_bar_height: int) -> py.Surface:
+    # def load_and_scale_board_image(self, size: tuple[int, float], nav_bar_height: int) -> py.Surface:
+    #     """
+    #     Load and scale the board image based on the number of players.
+    #     :param size: Size of the window.
+    #     :param nav_bar_height: Height of the navigation bar.
+    #     :return: Scaled board image.
+    #     """
+    #     board_image = py.image.load('src/images/wood_texture.jpg')
+    #
+    #     if self.no_players == 1:
+    #         return py.transform.smoothscale(board_image, (size[0], size[1] - nav_bar_height))
+    #
+    #     # Load and scale the images of the animals and place them on the board
+    #     for i in range(5):
+    #         # sprawdzenie, czy użytkownik posiada zwierzaka
+    #         if self.players[self.render_player].get_number_of_animal(Animal(i).name.lower()) > 0:
+    #             image = py.image.load(f'src/images/animals-active/{Animal(i).name.lower()}.png')
+    #         else:
+    #             image = py.image.load(f'src/images/animals/{Animal(i).name.lower()}.png')
+    #         image = py.transform.smoothscale(image, (80 * 2, 80 * 2))  # Adjust the size as needed
+    #         height = self.board_height - 250 + 200 * i
+    #         for j in range(5 - i):
+    #             width = self.board_width - 240 + 200 * j + 100 * i
+    #             self.animals_coords[1][Animal(i)].append((width, height))
+    #             board_image.blit(image, (width - 40 * 2, height - 40 * 2))  # Adjust position to center the image
+    #
+    #     self.render_player += 1 % (self.no_players - 2)
+    #     # Render two dogs on the board
+    #     small_dog = py.image.load('src/images/animals/small_dog.png')
+    #     big_dog = py.image.load('src/images/animals/big_dog.png')
+    #     small_dog = py.transform.smoothscale(small_dog, (80 * 2, 80 * 2))
+    #     big_dog = py.transform.smoothscale(big_dog, (80 * 2, 80 * 2))
+    #     for i in range(2):
+    #         width = self.board_width - 240 + 200 * i
+    #         self.animals_coords[1][Animal(5 + i)].append((width, height))
+    #         if i == 0:
+    #             board_image.blit(small_dog, (width - 40 * 10, self.board_height - 250 + 200 * 4 - 80))
+    #         else:
+    #             board_image.blit(big_dog, (width - 40 * 10, self.board_height - 250 + 200 * 4 - 80))
+    #
+    #     return py.transform.smoothscale(board_image, (self.board_width, self.board_height))
+
+    def load_and_scale_board_image(self, size: tuple[int, float], nav_bar_height: int) -> List[py.Surface]:
         """
         Load and scale the board image based on the number of players.
         :param size: Size of the window.
@@ -57,51 +120,43 @@ class Board:
         :return: Scaled board image.
         """
         board_image = py.image.load('src/images/wood_texture.jpg')
-
-        self.animals_coords = [
-            {
-                Animal.RABBIT: [],
-                Animal.SHEEP: [],
-                Animal.PIG: [],
-                Animal.COW: [],
-                Animal.HORSE: [],
-                Animal.SMALL_DOG: [],
-                Animal.BIG_DOG: [],
-            }
-            for _ in range(self.no_players)
-        ]
+        boards = []
 
         if self.no_players == 1:
-            return py.transform.smoothscale(board_image, (size[0], size[1] - nav_bar_height))
+            return [py.transform.smoothscale(board_image, (size[0], size[1] - nav_bar_height))]
+        for num_of_player in range(self.no_players):
+            # Load and scale the images of the animals and place them on the board
+            for i in range(5):
+                animal_count = self.players[num_of_player].get_number_of_animal(Animal(i).name.lower())
+                image_active = py.image.load(f'src/images/animals-active/{Animal(i).name.lower()}.png')
+                image_inactive = py.image.load(f'src/images/animals/{Animal(i).name.lower()}.png')
+                image_active = py.transform.smoothscale(image_active, (80 * 2, 80 * 2))
+                image_inactive = py.transform.smoothscale(image_inactive, (80 * 2, 80 * 2))
+                height = self.board_height - 250 + 200 * i
+                for j in range(5 - i):
+                    width = self.board_width - 240 + 200 * j + 100 * i
+                    self.animals_coords[1][Animal(i)].append((width, height))
+                    if animal_count > 0:
+                        board_image.blit(image_active, (width - 40 * 2, height - 40 * 2))
+                        animal_count -= 1
+                    else:
+                        board_image.blit(image_inactive, (width - 40 * 2, height - 40 * 2))
 
-        # Calculate the size of the board
-        board_width = size[0] // 2
-        board_height = (size[1] - nav_bar_height) // 2
+            # Render two dogs on the board
+            small_dog = py.image.load('src/images/animals/small_dog.png')
+            big_dog = py.image.load('src/images/animals/big_dog.png')
+            small_dog = py.transform.smoothscale(small_dog, (80 * 2, 80 * 2))
+            big_dog = py.transform.smoothscale(big_dog, (80 * 2, 80 * 2))
+            for i in range(2):
+                width = self.board_width - 240 + 200 * i
+                self.animals_coords[1][Animal(5 + i)].append((width, height))
+                if i == 0:
+                    board_image.blit(small_dog, (width - 40 * 10, self.board_height - 250 + 200 * 4 - 80))
+                else:
+                    board_image.blit(big_dog, (width - 40 * 10, self.board_height - 250 + 200 * 4 - 80))
+            boards.append(py.transform.smoothscale(board_image, (self.board_width, self.board_height)))
 
-        # Load and scale the images of the animals and place them on the board
-        for i in range(5):
-            image = py.image.load(f'src/images/zwierzaki/{Animal(i).name.lower()}.png')
-            image = py.transform.smoothscale(image, (80 * 2, 80 * 2))  # Adjust the size as needed
-            height = board_height - 250 + 200 * i
-            for j in range(5 - i):
-                width = board_width - 240 + 200 * j + 100 * i
-                self.animals_coords[1][Animal(i)].append((width, height))
-                board_image.blit(image, (width - 40 * 2, height - 40 * 2))  # Adjust position to center the image
-
-        # Render two dogs on the board
-        small_dog = py.image.load('src/images/zwierzaki/small_dog.png')
-        big_dog = py.image.load('src/images/zwierzaki/big_dog.png')
-        small_dog = py.transform.smoothscale(small_dog, (80 * 2, 80 * 2))
-        big_dog = py.transform.smoothscale(big_dog, (80 * 2, 80 * 2))
-        for i in range(2):
-            width = board_width - 240 + 200 * i
-            self.animals_coords[1][Animal(5 + i)].append((width, height))
-            if i == 0:
-                board_image.blit(small_dog, (width - 40 * 10, board_height - 250 + 200 * 4 - 80))
-            else:
-                board_image.blit(big_dog, (width - 40 * 10, board_height - 250 + 200 * 4 - 80))
-
-        return py.transform.smoothscale(board_image, (board_width, board_height))
+        return boards
 
     def render_board(self, window: py.Surface, nav_bar_height: int, size: tuple[int, float]) -> None:
         """
@@ -110,23 +165,35 @@ class Board:
         :param size: Size of the window.
         :param window: Surface to render the board on.
         """
-        board_width = size[0] // 2
-        board_height = (size[1] - nav_bar_height) // 2
+        self.board_width = size[0] // 2
+        self.board_height = (size[1] - nav_bar_height) // 2
         board_image = self.load_and_scale_board_image(size, nav_bar_height)
-        positions = self.get_board_positions(nav_bar_height, board_width, board_height)
-        for pos in positions:
-            window.blit(board_image, pos)
+        positions = self.get_board_positions(nav_bar_height, self.board_width, self.board_height)
+        self.positions = positions
+        self.window = window
+        for i in range(self.no_players):
+            window.blit(board_image[i], positions[i])
+
+        # for pos in positions:
+        #     window.blit(board_image, pos)
+        if self.active_player is not None:
+            # draw stroke for active player
+            py.draw.rect(self.window, (196, 246, 255), (self.positions[self.active_player][0], self.positions[self.active_player][1], self.board_width, self.board_height), 5)
+            # remove stroke for other players
+            for i in range(self.no_players):
+                if i != self.active_player:
+                    py.draw.rect(self.window, (0, 0, 0), (self.positions[i][0], self.positions[i][1], self.board_width, self.board_height), 5)
 
     def add_stroke(self, player: int) -> None:
         """
         Add a stroke to the board of the player.
         :param player: Index of the player.
         """
-        pass
+        self.active_player = player
 
-    def remove_stroke(self, player: int) -> None:
+    def set_players(self, players: [Player]) -> None:
         """
-        Remove a stroke from the board of the player.
-        :param player: Index of the player.
+        Set the players of game.
+        :param players: List of players in the game.
         """
-        pass
+        self.players = players

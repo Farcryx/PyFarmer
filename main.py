@@ -8,6 +8,7 @@ from src.classes.Dice import Dice
 from src.classes.Player import Player
 from src.logic.GameLogic import GameLogic
 from src.classes.MainHerd import MainHerd
+from src.GUI.MainHerdPanel import MainHerdPanel
 
 
 class App:
@@ -23,7 +24,7 @@ class App:
         self.game_end = False
         self._display_surf = None
         self.board_shown = False
-        self.size = self.weight, self.height = 1600, 1600 / 16 * 9
+        self.size = self.weight, self.height = 1690, 1690 / 16 * 9
         self.game_started = False
         self.font_title = None
         self.font_button = None
@@ -36,6 +37,9 @@ class App:
         self.player_turn = 0
         self.players = []
         self.main_herd = MainHerd()
+        self.herd_panel = None
+        self.navbar_height = 100
+        self.herd_panel_height = 50
 
     def on_init(self):
         py.init()
@@ -74,7 +78,9 @@ class App:
                     self.game_end = False
                     self.board_shown = True
 
-                    self.navbar = Navbar(self._display_surf, 100, self.font_button, self.font_title, self.size)
+                    self.navbar = Navbar(self._display_surf, self.navbar_height, self.font_button, self.font_title, self.size)
+                    self.herd_panel = MainHerdPanel(self._display_surf, self.font_button, [self.weight, self.navbar_height + self.herd_panel_height])
+                    self.herd_panel.set_main_herd(self.main_herd)
                     self.board = Board(self.font_button, self.no_players, self.main_herd)
                     for number in range(self.no_players):
                         player = Player(f"Player {number + 1}", self.main_herd)
@@ -107,16 +113,21 @@ class App:
 
     def on_render(self):
         self._display_surf.fill((0, 0, 0))
-
+    
         # Menu rendering
         if self.menu_shown:
             self.menu = Menu(self.font_button)
             self.menu.create_menu(self._display_surf)
-
+    
         if self.board_shown:
+            # Render in this order:
+            # 1. Navbar (at top)
             self.navbar.render_navbar()
-            self.board.render_board(self._display_surf, 100, self.size)
-
+            # 2. MainHerdPanel (after navbar)
+            self.herd_panel.render_panel()
+            # 2. Game boards (after navbar and MainHerdPanel)
+            self.board.render_board(self._display_surf, self.navbar_height + self.herd_panel_height, self.size)
+    
         py.display.flip()
 
     def on_cleanup(self):

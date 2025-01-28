@@ -4,13 +4,13 @@ from src.classes.MainHerd import MainHerd
 from src.logic.GameLogic import GameLogic
 
 class MainHerdPanel:
-    PANEL_HEIGHT = 50  # Make this a class constant
+    # PANEL_HEIGHT = 50  # Make this a class constant
 
-    def __init__(self, window: py.Surface, font: py.font.Font, size: Tuple[int, int], game_logic: GameLogic) -> None:
+    def __init__(self, window: py.Surface, font: py.font.Font, size: Tuple[int, int], game_logic: GameLogic, panel_height: int) -> None:
         self.window = window
         self.font = font
         self.size = size
-        self.panel_height = MainHerdPanel.PANEL_HEIGHT
+        self.panel_height = panel_height
         self.padding = 10
         self.main_herd = None
         self.exchange_buttons = {}
@@ -37,7 +37,7 @@ class MainHerdPanel:
         y_pos = self.size[1] - self.panel_height + self.padding
         
         for animal, count in self.main_herd.herd.items():
-            text = f"{animal}: {count}"
+            text = f"{animal.replace('_', ' ')}: {count}"
             text_surface = self.font.render(text, True, (255, 255, 255))
             self.window.blit(text_surface, (x_pos, y_pos))
             x_pos += text_surface.get_width() + 20  # Add spacing between items
@@ -47,8 +47,8 @@ class MainHerdPanel:
         if not self.main_herd:
             return
 
-        x_pos = self.padding + 505
-        y_pos = self.size[1] - self.panel_height + self.padding
+        x_pos = self.padding
+        y_pos = self.size[1] - self.panel_height + self.padding + 40
         
         self.render_animals_info()
         
@@ -56,7 +56,7 @@ class MainHerdPanel:
             button_rect = py.Rect(x_pos, y_pos, self.button_width + 110, self.button_height)
             
             # Button color based on exchange possibility
-            button_color = (0, 200, 0) if self.game_logic.trade_manager.gui_check_exchange(exchange[0], exchange[1], self.game_logic.players[self.game_logic.player_turn]) else (150, 150, 150)
+            button_color = (196, 246, 255) if self.game_logic.trade_manager.can_trade(exchange[0], exchange[1], self.game_logic.players[self.game_logic.player_turn]) else (150, 150, 150)
             py.draw.rect(self.window, button_color, button_rect)
             
             # Button text
@@ -78,8 +78,7 @@ class MainHerdPanel:
         """Handle mouse click events"""
         for (from_animal, to_animal), button_rect in self.exchange_buttons.items():
             if button_rect.collidepoint(mouse_pos):
-                if self.main_herd.can_exchange(from_animal):
+                if self.game_logic.trade_manager.can_trade(from_animal, to_animal, self.game_logic.players[self.game_logic.player_turn]):
                     print(f"Exchange {from_animal} to {to_animal}")
-                    # Call your exchange logic here
                     self.game_logic.trade_manager.execute_trade(from_animal, to_animal, self.game_logic.players[self.game_logic.player_turn])
                 break

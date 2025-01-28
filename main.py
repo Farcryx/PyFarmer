@@ -25,7 +25,6 @@ class App:
         self.game_end = False
         self._display_surf = None
         self.board_shown = False
-        self.size = self.weight, self.height = 1690, 1690 / 16 * 9
         self.game_started = False
         self.font_title = None
         self.font_button = None
@@ -40,7 +39,8 @@ class App:
         self.main_herd = MainHerd()
         self.herd_panel = None
         self.navbar_height = 100
-        self.herd_panel_height = 50
+        self.herd_panel_height = 100
+        self.size = self.weight, self.height = 1600, 1600 / 16 * 9 + 100
 
     def on_init(self):
         py.init()
@@ -91,7 +91,7 @@ class App:
                         print(player.__str__())
                         self.players.append(player)
                     self.game_logic = GameLogic(self.players, self.navbar, self.board, self.trade_manager)
-                    self.herd_panel = MainHerdPanel(self._display_surf, self.font_button, [self.weight, self.navbar_height + self.herd_panel_height], self.game_logic)
+                    self.herd_panel = MainHerdPanel(self._display_surf, self.font_button, [self.weight, self.navbar_height + self.herd_panel_height], self.game_logic, self.herd_panel_height)
                     self.herd_panel.set_main_herd(self.main_herd)
 
                     self.board.set_players(self.players)
@@ -107,8 +107,6 @@ class App:
                 # TODO: Buttons for dice and exchange
                 elif is_mouse_over(self.navbar.dice_button):
                     self.game_logic.roll_dice()
-                    pass
-                elif is_mouse_over(self.navbar.exchange_button):
                     pass
 
         elif not self.game_end and not self.menu_shown:

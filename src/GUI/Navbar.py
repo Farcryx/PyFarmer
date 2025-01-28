@@ -9,7 +9,6 @@ class Navbar:
         self.font_title = font_title
         self.size = size
         self.dice_button = None
-        self.exchange_button = None
         self.end_game_button = None
         self.dice1_image_name = None
         self.dice2_image_name = None
@@ -75,12 +74,10 @@ class Navbar:
         padding = 10
 
         start_game_button_x = self.size[0] - button_width - padding
-        exchange_button_x = start_game_button_x - button_width - padding
-        dice_button_x = exchange_button_x - button_width - padding
+        dice_button_x = start_game_button_x - button_width - padding
         dice_result1_x = dice_button_x - 100 - padding
         dice_result2_x = dice_result1_x - 100 - padding
 
         self.dice_button = self.render_button("RZUT KOSTKĄ", dice_button_x, 25, button_width, button_height)
-        self.exchange_button = self.render_button("WYMIANA", exchange_button_x, 25, button_width, button_height)
         self.end_game_button = self.render_button("ZAKOŃCZ GRĘ", start_game_button_x, 25, button_width, button_height)
         self.render_dice_images(dice_result1_x, dice_result2_x)

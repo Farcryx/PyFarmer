@@ -94,9 +94,15 @@ class App:
                     # TODO: Init board and first player turn
 
             elif self.board_shown:
-                if is_mouse_over(self.navbar.end_game_button):
-                    self._running = False
-                    print("Exit clicked")
+                # Handle board clicks
+                was_handled, message = self.board.handle_click(mouse_pos)
+                if was_handled:
+                    print(message)
+                    if "Exchange" in message:
+                        # Parse animals from message
+                        source, target = message.split(" ")[1], message.split(" ")[3]
+                        # TODO: Implement actual exchange logic
+                        print(f"Attempting exchange: {source} -> {target}")
 
                 # TODO: Buttons for dice and exchange
                 elif is_mouse_over(self.navbar.dice_button):

@@ -40,6 +40,9 @@ class Board:
             }
             for _ in range(self.no_players)
         ]
+        self.selected_animal = None  # First selected animal for exchange
+        self.target_animal = None   # Second selected animal for exchange
+        self.clickable_areas = []   # Store rectangles for clickable areas
 
     def get_board_positions(self, nav_bar_height: int, board_width: int, board_height: float) -> List[
         Tuple[int, float]]:
@@ -71,6 +74,24 @@ class Board:
             ]
         }
         return positions.get(self.no_players, [(0, nav_bar_height)])
+
+    def handle_click(self, mouse_pos: tuple[int, int]) -> tuple[bool, str]:
+        """
+        Handle click on animal image
+        Returns: (was_click_handled, animal_name)
+        """
+        for rect, animal_name in self.clickable_areas:
+            if rect.collidepoint(mouse_pos):
+                if not self.selected_animal:
+                    self.selected_animal = animal_name
+                    return True, f"Selected {animal_name} for exchange"
+                else:
+                    self.target_animal = animal_name
+                    result = (self.selected_animal, self.target_animal)
+                    self.selected_animal = None
+                    self.target_animal = None
+                    return True, f"Exchange {result[0]} for {result[1]}"
+        return False, ""
 
     def load_and_scale_board_image(self, size: tuple[int, float], nav_bar_height: int) -> List[py.Surface]:
         """
@@ -110,7 +131,10 @@ class Board:
 
                 for j in range(5 - i):
                     width = self.board_width - 240 + 200 * j + 100 * i
-                    self.animals_coords[1][Animal(i)].append((width, height))
+                    height = self.board_height - 250 + 200 * i
+                    # Add clickable area
+                    clickable_rect = py.Rect(width - 80, height - 80, 160, 160)
+                    self.clickable_areas.append((clickable_rect, Animal(i).name.lower()))
                     # render the animals on the board
                     if animal_count > 0:
                         board_image.blit(image_active, (width - 40 * 2, height - 40 * 2))
@@ -159,6 +183,11 @@ class Board:
             for i in range(self.no_players):
                 if i != self.active_player:
                     py.draw.rect(self.window, (0, 0, 0), (self.positions[i][0], self.positions[i][1], self.board_width, self.board_height), 5)
+
+        if self.selected_animal:
+            for rect, animal_name in self.clickable_areas:
+                if animal_name == self.selected_animal:
+                    py.draw.rect(window, (255, 255, 0), rect, 3)  # Yellow highlight
 
     def add_stroke(self, player: int) -> None:
         """

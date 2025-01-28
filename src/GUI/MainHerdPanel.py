@@ -3,7 +3,7 @@ from typing import Tuple
 from src.classes.MainHerd import MainHerd
 
 class MainHerdPanel:
-    PANEL_HEIGHT = 50  # Make this a class constant
+    PANEL_HEIGHT = 50
 
     def __init__(self, window: py.Surface, font: py.font.Font, size: Tuple[int, int]) -> None:
         self.window = window
@@ -35,7 +35,7 @@ class MainHerdPanel:
             text = f"{animal}: {count}"
             text_surface = self.font.render(text, True, (255, 255, 255))
             self.window.blit(text_surface, (x_pos, y_pos))
-            x_pos += text_surface.get_width() + 20  # Add spacing between items
+            x_pos += text_surface.get_width() + 20
 
     def render_panel(self) -> None:
         """Main method to render the entire panel"""

@@ -3,9 +3,7 @@ from src.classes.MainHerd import MainHerd
 class Player:
     def __init__(self, name: str, main_herd: MainHerd) -> None:
         self.name = name
-        self.animals = {"rabbit": 0, "sheep": 0, "pig": 0, "cow": 0, "horse": 0}
-        self.small_dogs = 0
-        self.big_dogs = 0
+        self.animals = {"rabbit": 0, "sheep": 0, "pig": 0, "cow": 0, "horse": 0, "small_dog": 0, "big_dog": 0}
         self.current_dice_roll = ("", "")
         self.total_pairs = {"rabbit": 0, "sheep": 0, "pig": 0, "cow": 0, "horse": 0}
         self.has_won = False
@@ -47,8 +45,6 @@ class Player:
     def reset(self):
         """Reset player state"""
         self.animals = {k: 0 for k in self.animals}
-        self.small_dogs = 0
-        self.big_dogs = 0
         self.current_dice_roll = ("", "")
         self.total_pairs = {k: 0 for k in self.total_pairs}
         self.has_won = False
@@ -56,8 +52,7 @@ class Player:
     def __str__(self) -> str:
         """String representation of player's state"""
         animals_str = ", ".join(f"{k}: {v}" for k, v in self.animals.items())
-        dogs_str = f"Small dogs: {self.small_dogs}, Big dogs: {self.big_dogs}"
-        return f"Player: {self.name} | {animals_str} | {dogs_str}"
+        return f"Player: {self.name} | {animals_str}"
 
     def get_last_roll(self) -> str:
         """Return the last roll of the player"""

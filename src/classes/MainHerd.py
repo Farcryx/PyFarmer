@@ -39,3 +39,6 @@ class MainHerd:
 
     def get_formatted_herd(self) -> str:
         return ", ".join(f"{k}: {v}" for k, v in self.herd.items())
+    
+    def can_exchange(self, animal_type: str) -> bool:
+        return animal_type in self.herd and self.herd[animal_type] > 0

@@ -9,6 +9,7 @@ from src.classes.Player import Player
 from src.logic.GameLogic import GameLogic
 from src.classes.MainHerd import MainHerd
 from src.GUI.MainHerdPanel import MainHerdPanel
+from src.classes.TradeManager import TradeManager
 
 
 class App:
@@ -79,8 +80,9 @@ class App:
                     self.board_shown = True
 
                     self.navbar = Navbar(self._display_surf, self.navbar_height, self.font_button, self.font_title, self.size)
-                    self.herd_panel = MainHerdPanel(self._display_surf, self.font_button, [self.weight, self.navbar_height + self.herd_panel_height])
-                    self.herd_panel.set_main_herd(self.main_herd)
+                    self.trade_manager = TradeManager(self.main_herd)
+                    
+                    
                     self.board = Board(self.font_button, self.no_players, self.main_herd)
                     for number in range(self.no_players):
                         player = Player(f"Player {number + 1}", self.main_herd)
@@ -88,12 +90,16 @@ class App:
                         player.add_animal("rabbit", 1)
                         print(player.__str__())
                         self.players.append(player)
-                    self.game_logic = GameLogic(self.players, self.navbar, self.board)
+                    self.game_logic = GameLogic(self.players, self.navbar, self.board, self.trade_manager)
+                    self.herd_panel = MainHerdPanel(self._display_surf, self.font_button, [self.weight, self.navbar_height + self.herd_panel_height], self.game_logic)
+                    self.herd_panel.set_main_herd(self.main_herd)
+
                     self.board.set_players(self.players)
 
                     # TODO: Init board and first player turn
 
             elif self.board_shown:
+                self.herd_panel.handle_click(mouse_pos)
                 if is_mouse_over(self.navbar.end_game_button):
                     self._running = False
                     print("Exit clicked")

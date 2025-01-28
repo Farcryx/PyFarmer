@@ -1,10 +1,20 @@
 from src.classes.Player import Player
+from src.classes.MainHerd import MainHerd
+from src.scripts.setup_game import EXCHANGE_RATES
 
 
 class TradeManager:
-    def __init__(self, exchange_rates: dict[str, dict[str, int]], main_herd: dict[str, int]):
-        self.exchange_rates = exchange_rates
+    def __init__(self, main_herd: MainHerd):
+        self.exchange_rates = EXCHANGE_RATES
         self.main_herd = main_herd
+        self.exchange_list = [
+            ["rabbit", "sheep"],
+            ["sheep", "pig"],
+            ["pig", "cow"],
+            ["cow", "horse"],
+            ["sheep", "small_dog"],
+            ["cow", "big_dog"]
+        ]
 
     def can_trade(self, source_animal: str, target_animal: str, quantity: int, player_animals: dict) -> bool:
         """Check if trade is possible based on exchange rates and quantities"""
@@ -15,7 +25,7 @@ class TradeManager:
         return (player_animals[source_animal] >= required_quantity and 
                 self.main_herd[target_animal] >= quantity)
 
-    def execute_trade(self, source_animal: str, target_animal: str, quantity: int, player: 'Player') -> bool:
+    def execute_trade(self, source_animal: str, target_animal: str, player: 'Player', quantity: int = 1) -> bool:
         """Execute trade between animals"""
         if not self.can_trade(source_animal, target_animal, quantity, player.animals):
             return False
@@ -31,16 +41,26 @@ class TradeManager:
         self.main_herd[source_animal] += required_quantity
         
         return True
+    
+    def gui_check_exchange(self, source_animal: str, target_animal: str, player: Player) -> bool:
+        """
+        Based on player's animals and main herd animals, check if exchange is possible due to exchange rates.
+        param source_animal: Source animal type.
+        param target_animal: Target animal type.
+        param player: Player object.
+        return: True if exchange is possible, False otherwise.
+        """
 
-    def buy_dog(self, dog_type: str, player: 'Player') -> bool:
-        """Buy a dog for the player"""
-        cost = 6 if dog_type == "small" else 12  # małe psy kosztują 6 owiec, duże 12
+        if source_animal not in self.exchange_rates or target_animal not in self.exchange_rates[source_animal]:
+            return False
         
-        if player.animals["owca"] >= cost:
-            player.animals["owca"] -= cost
-            if dog_type == "small":
-                player.small_dogs += 1
-            else:
-                player.big_dogs += 1
-            return True
-        return False
+        required_quantity = self.exchange_rates[source_animal][target_animal]
+        
+        # check if player has small dog, if yes, exchange for small dog is not possible
+        if source_animal == "sheep" and player.animals.get("small_dog", 0) > 0:
+            return False
+        if source_animal == "cow" and player.animals.get("big_dog", 0) > 0:
+            return False
+
+        return (player.animals[source_animal] >= required_quantity and 
+                self.main_herd[target_animal] > 0)

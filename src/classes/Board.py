@@ -119,8 +119,16 @@ class Board:
                         board_image.blit(image_inactive, (width - 40 * 2, height - 40 * 2))
 
             # Render two dogs on the board
-            small_dog = py.image.load('src/images/animals/small_dog.png')
-            big_dog = py.image.load('src/images/animals/big_dog.png')
+            # check if the player has small dog
+            if self.players[num_of_player].get_number_of_animal(Animal.SMALL_DOG.name.lower()) > 0:
+                small_dog = py.image.load('src/images/animals-active/small_dog.png')
+            else:
+                small_dog = py.image.load('src/images/animals/small_dog.png')
+            
+            if self.players[num_of_player].get_number_of_animal(Animal.BIG_DOG.name.lower()) > 0:
+                big_dog = py.image.load('src/images/animals-active/big_dog.png')
+            else:
+                big_dog = py.image.load('src/images/animals/big_dog.png')
             small_dog = py.transform.smoothscale(small_dog, (80 * 2, 80 * 2))
             big_dog = py.transform.smoothscale(big_dog, (80 * 2, 80 * 2))
             for i in range(2):

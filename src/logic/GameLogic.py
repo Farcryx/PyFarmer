@@ -4,10 +4,11 @@ from src.classes.Player import Player
 from src.GUI.Navbar import Navbar
 from src.classes.Board import Board
 from src.scripts.setup_game import DICE1_SIDES, DICE2_SIDES
+from src.classes.TradeManager import TradeManager
 
 
 class GameLogic():
-    def __init__(self, players: [Player], navbar: Navbar, board: Board) -> None:
+    def __init__(self, players: [Player], navbar: Navbar, board: Board, trade_manager: TradeManager) -> None:
         """
         Initialize the game logic.
         :param players: List of players in the game.
@@ -24,6 +25,7 @@ class GameLogic():
         self.navbar = navbar
         self.board = board
         self.dice_handler = DiceEventHandler(board.main_herd)
+        self.trade_manager = trade_manager
 
     def next_player(self) -> None:
         """
@@ -61,4 +63,7 @@ class GameLogic():
         pass
 
     def end_game(self):
+        pass
+
+    def handle_exchange(self):
         pass

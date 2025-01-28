@@ -32,7 +32,7 @@ class DiceEventHandler:
 
     def _handle_wolf(self) -> tuple[bool, str]:
         """Wolf event handler"""
-        if self.player.big_dogs > 0:
+        if self.player.animals.get("big_dog", 0) > 0:
             return True, "Wolf was scared away by big dog!"
 
         # Player lost all animals except horses, rabbits and small dogs
@@ -44,7 +44,7 @@ class DiceEventHandler:
 
     def _handle_fox(self) -> tuple[bool, str]:
         """Fox event handler"""
-        if self.player.small_dogs > 0:
+        if self.player.animals.get("small_dog", 0) > 0:
             return True, "Fox was scared away by small dog!"
 
         # Player lost all rabbits except one
